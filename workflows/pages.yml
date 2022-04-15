@@ -1,0 +1,24 @@
+name: pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Generate document
+        run: |
+          wget --no-verbose -O mint https://mint-lang.s3-eu-west-1.amazonaws.com/mint-master-linux
+          chmod +x ./mint
+          sudo mv ./mint /usr/local/bin/mint
+          mint build --skip-service-worker
+      - name: Publish Documentation on GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
